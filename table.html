@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Calculate</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+    <div class="w-screen h-screen flex justify-center ">
+        <div class="shadow-2xl bg-slate-100 rounded-xl text-center w-full">
+            <h1 class="text-slate-800 font-bold  text-2xl p-3">Unique Jeweller</h1>
+            <div class="flex p-2 justify-between">
+                <h2 class="text-slate-800 p-2 font-semibold">All Records</h2>
+                <a class="text-right rounded-xl text-sm px-4 py-2 bg-slate-800 text-slate-100"
+                    href="./index.html">Home</a>
+            </div>
+            <table id="tableData" class="text-[10px] overflow-auto">
+                <thead class="">
+                    <tr>
+                        <td class="w-9">WT</td>
+                        <td class="w-9">GAMT</td>
+                        <td class="w-9">TL</td>
+                        <td class="w-9">GST</td>
+                        <td class="w-9">GT</td>
+                        <td class="w-9">Ed</td>
+                        <td class="w-9">Del</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div id="singleShow" class="w-120 rounded-xl flex flex-col"></div>
+
+        </div>
+    </div>
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+    <script type="module">
+        import { saveData, getData, singleData, deleteData } from "../script/util.js"
+
+
+
+        $('#tableData').DataTable({
+            data: getData(),
+            columns: [
+                { data: 'weight' },
+                {
+                    data: 'goldAmount', render: (data, type, row) => {
+                        return data.toFixed(1)
+                    }
+                },
+                {
+                    data: 'total', render: (data, type, row) => {
+                        return data.toFixed(1)
+                    }
+                },
+                {
+                    data: 'gstAmt', render: (data, type, row) => {
+                        return data.toFixed(1)
+                    }
+                },
+                {
+                    data: 'result', render: (data, type, row) => {
+                        return data.toFixed(1)
+                    }
+                },
+                {
+                    data: null, render: (data, type, row) => {
+                        return `<button  data-id="${data.id}" class="show-btn cursor-pointer flex items-center justify-center rounded-2xl text-white px-3 py-1 h-5 w-5 bg-slate-900">Show</button>`
+                    }
+                },
+                {
+                    data: null, render: (data, type, row) => {
+                        return `<button data-id="${data.id}" class="delete-btn cursor-pointer flex items-center justify-center rounded-2xl text-white px-4 py-1 h-6 w-6 bg-red-900">Delete</button>`
+                    }
+                },
+            ]
+        })
+        document.querySelector('#tableData').addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('show-btn')) {
+                const id = e.target.getAttribute('data-id')
+                const singleResult = singleData(id)
+                console.log(singleResult)
+                let singleShow = document.querySelector('#singleShow')
+                singleShow.innerHTML = `<p class="flex bg-slate-900 text-slate-100 rounded-xl mb-1 p-2 px-4 justify-between"><span>Weight</span><span>${singleResult[0].weight}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>Rate</span><span>${singleResult[0].rate}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>Gold Amount</span><span>${singleResult[0].goldAmount}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>MKG</span><span>${singleResult[0].mkg.toFixed(1)}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>ST AMT</span><span>${singleResult[0].stAmt}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>Diamond Amount</span><span>${singleResult[0].diaAmt}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>Total</span><span>${singleResult[0].total}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>GST 3%</span><span>${singleResult[0].gstAmt.toFixed(1)}</span></p><p class="flex bg-slate-900 text-slate-100 rounded-xl p-2 mb-1 px-4 justify-between"><span>Grand Total</span><span>${singleResult[0].result.toFixed(1)}</span></p>`
+            }
+        })
+
+        document.querySelector('#tableData').addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('delete-btn')) {
+                const id = e.target.getAttribute('data-id')
+                confirm()
+                deleteData(id)
+                location.reload()
+
+            }
+        })
+
+
+
+    </script>
+</body>
+
+</html>

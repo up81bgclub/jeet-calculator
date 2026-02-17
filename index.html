@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Calculate</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+     <div class="w-screen h-screen flex justify-center ">
+      <div class="shadow-2xl bg-slate-100 rounded-xl text-center w-125">
+        <h1 class="text-slate-800 font-bold  text-2xl p-3">Unique Jeweller</h1>
+        <div class="flex flex-col p-2">
+          <h2 class="text-slate-800 p-2 font-semibold">Article Calculator</h2>
+          <div class="flex flex-col items-center">
+            <select id="selectBox" class="my-4 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" name="" id="">
+              <option class="hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" value="">Select</option>
+              <option value="gold">Gold</option>
+              <option value="silver">Silver</option>
+              <option value="diamond">Diamond</option>
+            </select>
+            
+          </div>
+          <!-- gold -->
+           <!-- <p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Amount</span> <span>gm</span></p>
+<p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Amount</span> <span></span></p><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Zakat 2.5%</span> <span></span></p> -->
+          <div id="htmlContainer">
+            
+          </div>
+          <p class="text-center text-slate-800">Recent Data</p>
+          <table class="text-sm bg-slate-800 text-slate-100 p-4">
+            <thead> 
+              <tr>
+                <td>WT</td>
+                <td>RT</td>
+                <td>GM</td>
+                <td>MKG</td>
+                <td>ST</td>
+                <td>DM</td>
+                <td>TL</td>
+                <td>GST</td>
+                <td>GT</td>
+              </tr>
+            </thead>
+            <tbody id="result" class="border">
+
+            </tbody>
+          </table>
+          <a class="text-right text-sm text-slate-800" href="./table.html">More...</a>
+        </div>
+        
+      </div>
+    </div>
+    <script type="module">
+      import { multiplication, sumValue, making, gst, grandTotal, saveData, getData } from "../script/util.js"
+        const selectBox = document.getElementById('selectBox');
+        let htmlContainer = document.getElementById('htmlContainer');
+
+        let table = ""
+        const resultBox = document.querySelector("#result")
+        const filerDate = new Date().toLocaleString()
+        const localData = getData() || []
+        const newData = localData.filter(item => filerDate.split(",")[0] === item.id.split(",")[0])
+         
+        newData.forEach(item => {
+          table += `<tr class="border text-[10px]"><td class="border p-1">${item.weight} gm</td><td class="border p-1">${item.rate}</td><td class="border p-1">${item.goldAmount.toFixed(1)}</td><td class="border p-1">${item.mkg.toFixed(1)}</td><td class="border p-1">${item.stAmt}</td><td class="border p-1">${item.diaAmt}</td><td class="border p-1">${item.total.toFixed(1)}</td><td class="border p-1">${item.gstAmt.toFixed(1)}</td><td class="border p-1">${item.result.toFixed(0)}</td></tr>`
+        });
+        resultBox.innerHTML=table
+
+        const changeFunction = () => {
+            const val = selectBox.value
+            if(val === "gold"){
+                htmlContainer.innerHTML=
+                '<div class="flex p-2"><input id="gweight"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Item Weight" /><input id="grate"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Current Rate" /></div><div class="flex p-2"><input id="gmkg"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter MKG" /><input id="gstamt"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Stone AMT" /></div><button id="gbtn" type="button" class="bg-slate-500 rounded-2xl px-3 py-2 cursor-pointer my-4 font-semibold text-slate-50 hover:bg-slate-800 hover:text-white transition shodow-2xl">Calcutate</button>';
+
+                document.getElementById("gbtn").addEventListener("click", () => {
+                  
+                  var weight = document.querySelector('#gweight').value
+                  var rate = document.querySelector('#grate').value
+                  // multipli value
+                  var goldAmount = parseFloat(multiplication(weight,rate))
+
+                  var mkgPercent = document.querySelector('#gmkg').value
+                  // Calculate Making
+                  var mkg = making(goldAmount,mkgPercent)
+
+                  var stamt = document.querySelector('#gstamt').value
+                  alert([goldAmount,mkg,stamt])
+                  var total =""
+                  if(!stamt){
+                    total = sumValue([goldAmount,mkg])
+                  }else{
+                    total = sumValue([goldAmount,mkg,stamt])
+                  }
+
+                  // calculate GST
+                  var gstAmt = gst(total)
+
+                  var result = grandTotal(total,gstAmt)
+
+                  const data = {
+                    id: new Date().toLocaleString(),
+                    weight: weight,
+                    rate: rate,
+                    mkg: mkg,
+                    stAmt: stamt,
+                    diaAmt: null,
+                    goldAmount:goldAmount,
+                    total:total,
+                    gstAmt:gstAmt,
+                    result:result
+                  }
+
+                  saveData(data)
+                  location.reload()
+
+                  
+
+                  
+                  
+                })
+                
+            } else if(val === "silver"){
+                htmlContainer.innerHTML=
+                '<div class="flex p-2 bg-slate-500 rounded-t-lg"><input id="weight"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Item Weight" /><input id="rate"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Current Rate" /></div><div class="flex p-2 bg-slate-500 rounded-b-lg"><input id="mkg"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter MKG" /></div><button id="btn" type="button" class="bg-slate-500 rounded-2xl px-3 py-2 cursor-pointer my-4 font-semibold text-slate-50 hover:bg-slate-800 hover:text-white transition shodow-2xl">Calcutate</button><div class="bg-slate-800 text-slate-100 rounded-2xl p-4"><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Weight</span> <span>gm</span></p><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Amount</span> <span></span></p><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Zakat 2.5%</span> <span></span></p></div>';
+                
+            } else if(val === "diamond"){
+                htmlContainer.innerHTML=
+                '<div class="flex p-2 bg-slate-300 rounded-t-lg"><input id="dWe"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Item Weight" /><input id="rate"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Current Rate" /></div><div class="flex p-2 bg-slate-300"><input id="dAmt"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Diamond AMT" /><input id="stAmt"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter Stone AMT" /></div><div class="flex p-2 bg-slate-300 rounded-b-lg"><input id="mkg"  value="" class="my-2 mx-1 hover:bg-slate-900 hover:text-slate-100 shadow-xl p-2 px-3 text-slate-900 bg-slate-200 w-full rounded-2xl border border-slate-200" type="number" placeholder="Enter MKG" /></div><button id="btn" type="button" class="bg-slate-500 rounded-2xl px-3 py-2 cursor-pointer my-4 font-semibold text-slate-50 hover:bg-slate-800 hover:text-white transition shodow-2xl">Calcutate</button><div class="bg-slate-800 text-slate-100 rounded-2xl p-4"><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Weight</span> <span>gm</span></p><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Amount</span> <span></span></p><p class="text-left bg-slate-700 p-2 px-8 rounded-xl mb-1 flex justify-between"><span>Zakat 2.5%</span> <span></span></p></div>';
+            }
+            
+
+        }
+
+        selectBox.addEventListener("change",changeFunction);
+        
+    </script>
+</body>
+</html>
