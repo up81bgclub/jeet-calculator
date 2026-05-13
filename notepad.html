@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Notepad</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+
+</head>
+
+<body>
+    <div class="bg-slate-100">
+        <div class="shadow-2xl rounded-xl text-center w-screen mb-1 p-2">
+            <div class="">
+                <h1 class="text-slate-800 font-bold  text-2xl p-3">Unique Jeweller</h1>
+                <h2 class="text-slate-800 text-center p-2 font-semibold">Notepad</h2>
+            </div>
+            <!-- ... -->
+            <div class="">
+                <textarea name="notepad" id="notepad" class="bg-slate-300 rounded-2xl w-[90%] h-[500px] border-1 border-slate-800 p-4 text-slate-900"></textarea>
+                <button class="py-1 bg-slate-800 w-25 shadow-xl hover:bg-slate-400 hover:text-slate-900 mt-3 rounded-xl text-white justify-self-end cursor-pointer" id="save">Save Notes</button>
+<a class="text-right rounded-xl text-sm px-4 py-2 bg-slate-800 text-slate-100"
+                    href="./index.html">Home</a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-red-100 p-3" id="showData">
+    </div>
+            
+</body>
+<script type="module">
+    import { manageNotes, getNoteData, deleteNoteData } from "../script/util.js"
+    document.getElementById('save').addEventListener('click', () => {
+        var notepadData = document.getElementById('notepad').value
+        manageNotes(notepadData)
+        location.reload()
+    })
+    
+    
+
+    var para = ""
+    const localData = getNoteData() || []
+    localData.forEach(item => {
+        para += `<div class="flex rounded-2xl text-slate-800 mt-1 justify-between px-8 py-2 bg-red-300 shadow-xl"><p>${item.info}</p><button data-id="${item.timestamp}" class="delete-btn cursor-pointer text-red-900">X</button></div>`
+    })
+
+    var showData = document.getElementById('showData')
+    showData.innerHTML = para
+    
+
+    document.querySelector('#showData').addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('delete-btn')) {
+                const id = e.target.getAttribute('data-id')
+                // confirm()
+                deleteNoteData(id)
+                location.reload()
+
+            }
+        })
+</script>
+</html>

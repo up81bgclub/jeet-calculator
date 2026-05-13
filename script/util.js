@@ -43,3 +43,39 @@ export const deleteData = (id) => {
     const data =  stored.filter(item => id !== item.id)
     localStorage.setItem("ujData",JSON.stringify(data))
 }
+
+export const manageNotes = (data) => {
+    const keyName = "notes"
+    const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000
+
+    const now = new Date().getTime()
+
+    let dataArray = JSON.parse(localStorage.getItem(keyName)) || []
+
+    dataArray = dataArray.filter(item => {
+        return (now - item.timestamp) < fiveDaysInMs
+    })
+
+    const newEntry = {
+        info: data,
+        timestamp: now
+    }
+
+    dataArray.push(newEntry)
+
+    localStorage.setItem(keyName, JSON.stringify(dataArray))
+
+    
+}
+
+export const getNoteData = () => {
+    return JSON.parse(localStorage.getItem("notes"))
+}
+
+export const deleteNoteData = (timestamp) => {
+    const stored = JSON.parse(localStorage.getItem("notes")) || [];
+    const data =  stored.filter(item => Number(timestamp) !== Number(item.timestamp))
+    localStorage.setItem("notes",JSON.stringify(data))
+}
+
+
